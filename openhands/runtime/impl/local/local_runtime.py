@@ -112,13 +112,13 @@ def check_dependencies(code_repo_path: str, check_browser: bool) -> None:
 
         server = libtmux.Server()
         try:
-            session = server.new_session(session_name='test-session')
+            session = server.new_session(session_name='test-session', kill_session=True)
         except Exception:
             raise ValueError('tmux is not properly installed or available on the path.')
-        pane = session.attached_pane
+        pane = session.active_pane
         pane.send_keys('echo "test"')
         pane_output = '\n'.join(pane.cmd('capture-pane', '-p').stdout)
-        session.kill_session()
+        session.kill()
         if 'test' not in pane_output:
             raise ValueError('libtmux is not properly installed. ' + ERROR_MESSAGE)
 
